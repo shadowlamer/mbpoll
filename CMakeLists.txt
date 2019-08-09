@@ -35,7 +35,17 @@ target_include_directories(mbpoll PUBLIC 3rdparty)
 install(TARGETS mbpoll RUNTIME DESTINATION bin)
 
 ### Debian Package generation
+if (NOT DEFINED PACKAGE_ARCHITECTURE)
+    execute_process (
+            COMMAND dpkg --print-architecture
+            OUTPUT_VARIABLE PACKAGE_ARCHITECTURE
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+endif()
 set(CPACK_GENERATOR "DEB")
 set(CPACK_PACKAGE_VERSION "${MBPOLL_PKG_VERSION}")
-set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Franz Flasch")
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}_${CPACK_PACKAGE_VERSION}_${PACKAGE_ARCHITECTURE}")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Vadim Cherenev <sl@anhot.ru>")
+set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "command line utility to communicate with ModBus slave (RTU or TCP)")
+set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "${PACKAGE_ARCHITECTURE}")
 include(CPack)
